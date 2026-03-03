@@ -32,6 +32,15 @@ Final Response + Execution Trace + Evidence displayed in UI
 2. **simulate_whatif**: Takes multiple scenarios (strings) and retrieves Snowflake chunks for each simultaneously, returning metrics to identify the best keywords.
 3. **get_eval_metrics**: Returns the historical evaluation and performance metrics (Latency, Score, Return Rows) from the Snowflake `EVAL_METRICS` table.
 
+## Evaluation Criteria
+
+The Agent was evaluated using the following criteria:
+
+- **Tool Selection Accuracy** – Whether the LLM correctly selected the appropriate tool.
+- **Argument Extraction Accuracy** – Whether parameters passed to tools were correctly structured.
+- **Grounded Response Quality** – Whether the final answer was strictly based on retrieved Snowflake evidence.
+- **Latency Impact** – Measured end-to-end execution time recorded in `EVAL_METRICS`.
+- **Failure Handling** – Proper refusal or fallback behavior when queries fall outside system scope.
 ---
 
 ## Evaluation Scenarios
@@ -53,9 +62,21 @@ Final Response + Execution Trace + Evidence displayed in UI
 **Limitations:** Context limits. If too many scenarios are simulated, the JSON returned to the LLM could exceed its token window.
 
 ### Scenario 3: Complex Diagnostic + Fallback
-**User Query:** "Show me the eval summary. Also, what is the weather like today?"
-**Tool Chain:** `[get_eval_metrics]`
-**Expected Behavior:** Agent calls the metrics tool to get the pipeline stats, summarizes them, and explicitly refuses to answer the weather question (or states it has no information) as per the system prompt.
-**Observed Behavior:** Agent called `get_eval_metrics(summary=True)`, received the data block, provided a summary of average latency and scores, and politely informed the user that it does not have access to real-time weather information, as it is strictly a UMKC policy assistant.
-**Strengths:** Strict adherence to context and tools. Defensive response when queries fall outside the domain.
+**Observed Behavior:** The agent correctly invoked `get_eval_metrics`, summarized the historical evaluation metrics, and declined to answer the unrelated weather question, stating that the system only has access to UMKC policy data.
+
+**Strengths:** Demonstrates controlled scope enforcement and reduces hallucination risk by avoiding unsupported queries.
+
+**Limitations:** The system currently relies on prompt-based refusal rather than a hard external API guardrail.
 **Future Improvements:** Inject a secondary web-search tool explicitly for external queries if out-of-domain answers become desirable.
+
+## Week 6 Reliability Improvements
+
+During Week 6, the Agent execution loop (`agent_runner.py`) was refactored to improve clarity and reliability:
+
+- Structured tool-call routing to avoid redundant execution paths.
+- Improved module path handling in `tools.py` to ensure consistent imports.
+- Centralized Snowflake connection logic (`db.py`) to prevent duplicate connection definitions.
+- Added environment validation prior to database access to reduce runtime failures.
+
+These changes improved maintainability and reduced risk of silent execution errors.
+
