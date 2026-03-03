@@ -94,7 +94,7 @@ In CS 5588 Week 6, the system was refactored by the Antigravity IDE into a stand
 ## 5. Repository Structure
 
 ```
-Week-5-SmartCampus/
+Week-6-SmartCampus/
 ├── README.md
 ├── CONTRIBUTIONS.md
 ├── pipeline_logs.csv
