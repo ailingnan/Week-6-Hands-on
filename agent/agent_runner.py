@@ -21,6 +21,8 @@ import app.core_services as cs
 from agent.tools import TOOL_MAP
 from agent.tool_schemas import ALL_TOOLS
 
+MODEL_NAME = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+
 SYSTEM_PROMPT = """You are a helpful, intelligent agent assisting UMKC (University of Missouri-Kansas City) students and staff with policy questions and pipeline analytics.
 You have access to a set of specialized tools. 
 When the user asks a question, determine which tool (if any) is best suited to find the answer.
@@ -66,7 +68,7 @@ def run_agent(user_query: str) -> dict:
         t0 = time.time()
         # 3. First LLM Call (Routing)
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",  # Updated from decommissioned llama3-8b-8192
+            model=MODEL_NAME,  # Updated from decommissioned llama3-8b-8192
             messages=messages,
             tools=ALL_TOOLS,
             tool_choice="auto",
@@ -132,7 +134,7 @@ def run_agent(user_query: str) -> dict:
             trace.append({"step": "Generating final answer", "content": "Synthesizing tool results..."})
             t2 = time.time()
             final_response = client.chat.completions.create(
-                MODEL_NAME = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+                model=MODEL_NAME,
                 messages=messages,
                 max_tokens=1024,
                 temperature=0.2
@@ -164,5 +166,6 @@ def run_agent(user_query: str) -> dict:
             "trace": trace,
             "evidence": evidence
         }
+
 
 
