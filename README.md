@@ -1,8 +1,10 @@
-# Week-6-Hands-on
-# HappyGroup: Smart Campus Digital Twin
+# Week 6 Hands-On — Smart Campus Digital Twin (HappyGroup)
 # Video link :# https://drive.google.com/file/d/1A1RJ85WTymJMVNDYLD-HBNPqZzY9y8pI/view?usp=sharing
 
 ------------------------------------------------------------------------
+## Executive Summary
+
+The HappyGroup Smart Campus Digital Twin is a production-style Retrieval-Augmented Generation (RAG) system built on Snowflake and Groq LLaMA. It transforms authoritative UMKC policy documents into a structured, searchable knowledge base and exposes both a Streamlit dashboard and an Agent-based chat interface for intelligent, grounded decision support. The system emphasizes reliability, auditability, and performance logging.
 
 ## 1. System Workflow
 
@@ -14,6 +16,10 @@ The **HappyGroup** Smart Campus system is a production-grade data science pipeli
 - **LLM Generation:** Retrieved document chunks are passed to **Groq LLaMA** as grounding context, enabling natural language answers rooted in official UMKC policy.
 - **Evaluation & Retrieval:** An optimized SQL layer performs ranked searches, while a dedicated Python evaluation module (`evaluator.py`) logs retrieval quality and latency back to Snowflake.
 - **Agentic Extension (Week 6):** An automated intelligent agent runs on top of these pipelines, capable of intent recognition, function calling (`search_policy`, `simulate_whatif`), and synthesizing multi-document answers.
+
+### End-to-End Pipeline Overview
+
+PDF → Chunking → Snowflake Storage → Ranked Retrieval → LLM Grounded Response → Evaluation Logging → Agent Orchestration
 
 ---
 
@@ -96,25 +102,13 @@ In CS 5588 Week 6, the system was refactored by the Antigravity IDE into a stand
 ```
 Week-6-SmartCampus/
 ├── README.md
-├── CONTRIBUTIONS.md
-├── pipeline_logs.csv
+├── db.py
 ├── requirements.txt
-│
-├── sql/
-│   ├── 01_create_schema.sql
-│   ├── 02_create_tables.sql
-│   ├── 03_create_staging_tables.sql
-│   ├── 04_feature_engineering.sql
-│   └── 05_retrieval_queries.sql
-│
-├── ingestion/
-│   └── scheduler.py
-│
-├── feature_engineering/
-│   └── feature_store.py
-│
-├── modeling/
-│   └── evaluator.py
+├── pipeline_logs.csv
+├── rsa_key.p8
+├── rsa_key.pub
+├── task1_antigravity_report.md
+├── task4_evaluation_report.md
 │
 ├── agent/
 │   ├── agent_runner.py
@@ -125,10 +119,28 @@ Week-6-SmartCampus/
 │   ├── app.py
 │   └── core_services.py
 │
-└── architecture/
-    └── architecture_diagram.png
+├── features/
+│   └── feature_store.py
+│
+├── ingestion/
+│   ├── 01_extract_chunk.py
+│   └── scheduler.py
+│
+├── modeling/
+│   └── evaluator.py
+│
+├── sql/
+│   ├── 01_create_schema.sql
+│   ├── 02_create_tables.sql
+│   ├── 03_create_staging_tables.sql
+│   ├── 04_feature_engineering.sql
+│   └── 05_retrieval_queries.sql
+│
+└── utils/
+    ├── __init__.py
+    ├── config_validator.py
+    └── logger.py
 ```
-
 ---
 
 ## 6. Team Contributions
@@ -162,6 +174,8 @@ SNOWFLAKE_USER=your_user
 SNOWFLAKE_ROLE=your_role
 SNOWFLAKE_WAREHOUSE=your_warehouse
 SNOWFLAKE_DATABASE=TRAINING_DB
+SNOWFLAKE_SCHEMA=UMKC_RAG
+SNOWFLAKE_RSA_KEY_PATH=rsa_key.p8
 SNOWFLAKE_SCHEMA=UMKC_RAG
 GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxx
 SCHEDULER_INTERVAL_SEC=60
