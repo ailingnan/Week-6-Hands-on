@@ -148,7 +148,7 @@ Week-6-SmartCampus/
 | Member | Primary Role | Technical Ownership (Week 5 & 6) |
 | :--- | :--- | :--- |
 | **Ailing Nan** | Project Lead & AI Architect | **Core System & AI Engine (Most Important Contribution):** Led the Week 6 Antigravity IDE setup, designed the agent tools (`tools.py`, `tool_schemas.py`), built the `agent_runner.py` reasoning loop, and integrated the complete Agent Chat interface. Also owns the foundational Python ETL pipeline, RSA Security, Database Governance, and Extensions 1 & 5. |
-| **Lyza Iamrache** | Systems Lead | Snowflake Architecture, Automated Scheduled Ingestion (Ext. 6), Pipeline Logging & Monitoring (Ext. 2) |
+| **Lyza Iamrache** | Systems Lead | Architected centralized Snowflake connection layer (`db.py`, `get_sf_connection`), implemented environment validation and dependency management, refactored ingestion CSV validation logic, improved evaluation logging (`evaluator.py`), and enhanced Agent execution flow and path handling (`agent_runner.py`, `tools.py`), Ext 2 and 6 |
 | **Gia Huynh** | Evaluation & UI Lead | Streamlit Application UI, SQL Query Optimization (Ext. 3), Evaluation Metrics Dashboard (Ext. 4) |
 
 ---
