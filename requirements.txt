@@ -2,3 +2,7 @@ streamlit
 snowflake-connector-python
 python-dotenv
 pandas
+cryptography
+groq
+pymupdf
+tqdm
