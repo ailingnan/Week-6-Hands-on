@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 import snowflake.connector
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
+from db import get_sf_connection
 
 load_dotenv()
 
@@ -37,28 +38,7 @@ CREATE TABLE IF NOT EXISTS EVAL_METRICS (
 """
 
 def sf_connect():
-    """Establish a connection to Snowflake using RSA key authentication."""
-    key_path = os.getenv("SNOWFLAKE_RSA_KEY_PATH", "rsa_key.p8")
-    if not os.path.exists(key_path):
-        raise FileNotFoundError(f"Missing RSA key file: {key_path} (set SNOWFLAKE_RSA_KEY_PATH)")
-
-    with open(key_path, "rb") as f:
-        pk = serialization.load_pem_private_key(f.read(), password=None, backend=default_backend())
-    pkb = pk.private_bytes(
-        encoding=serialization.Encoding.DER,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption()
-    )
-
-    return snowflake.connector.connect(
-        account=os.getenv("SNOWFLAKE_ACCOUNT"),
-        user=os.getenv("SNOWFLAKE_USER"),
-        private_key=pkb,
-        role=os.getenv("SNOWFLAKE_ROLE"),
-        warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
-        database=os.getenv("SNOWFLAKE_DATABASE"),
-        schema=os.getenv("SNOWFLAKE_SCHEMA"),
-    )
+    return get_sf_connection()
 
 def ensure_table():
     """Ensure the EVAL_METRICS table exists in Snowflake. Call once at app start."""
