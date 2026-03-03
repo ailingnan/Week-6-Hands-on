@@ -132,7 +132,7 @@ def run_agent(user_query: str) -> dict:
             trace.append({"step": "Generating final answer", "content": "Synthesizing tool results..."})
             t2 = time.time()
             final_response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                MODEL_NAME = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
                 messages=messages,
                 max_tokens=1024,
                 temperature=0.2
@@ -164,4 +164,5 @@ def run_agent(user_query: str) -> dict:
             "trace": trace,
             "evidence": evidence
         }
+
 
