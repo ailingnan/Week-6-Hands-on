@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import snowflake.connector
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
+from utils.config_validator import validate_env
 load_dotenv()
 
 def get_sf_connection():
@@ -10,6 +11,8 @@ def get_sf_connection():
     Centralized Snowflake connection using RSA key authentication.
     All modules should import and call this instead of duplicating sf_connect().
     """
+  validate_env()
+
   key_path = os.getenv("SNOWFLAKE_RSA_KEY_PATH", "rsa_key.p8")
     if not os.path.exists(key_path):
         raise FileNotFoundError(
