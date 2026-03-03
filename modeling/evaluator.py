@@ -12,9 +12,6 @@ import os, time, uuid
 from datetime import datetime
 import pandas as pd
 from dotenv import load_dotenv
-import snowflake.connector
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.backends import default_backend
 from db import get_sf_connection
 
 load_dotenv()
