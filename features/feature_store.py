@@ -10,9 +10,7 @@ import os, time
 from datetime import datetime
 import pandas as pd
 from dotenv import load_dotenv
-import snowflake.connector
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.backends import default_backend
+from db import get_sf_connection
 
 load_dotenv()
 
@@ -30,30 +28,8 @@ CREATE TABLE IF NOT EXISTS FEATURE_STORE (
     PRIMARY KEY (FEATURE_ID)
 );
 """
-
 def sf_connect():
-    """Establishes a connection to Snowflake using RSA key authentication."""
-    key_path = os.getenv("SNOWFLAKE_RSA_KEY_PATH", "rsa_key.p8")
-    if not os.path.exists(key_path):
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-        key_path = os.path.join(project_root, "rsa_key.p8")
-        
-    with open(key_path, "rb") as f:
-        pk = serialization.load_pem_private_key(f.read(), password=None, backend=default_backend())
-    pkb = pk.private_bytes(
-        encoding=serialization.Encoding.DER,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption()
-    )
-    return snowflake.connector.connect(
-        account=os.getenv("SNOWFLAKE_ACCOUNT"),
-        user=os.getenv("SNOWFLAKE_USER"),
-        private_key=pkb,
-        role=os.getenv("SNOWFLAKE_ROLE"),
-        warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
-        database=os.getenv("SNOWFLAKE_DATABASE"),
-        schema=os.getenv("SNOWFLAKE_SCHEMA"),
-    )
+    return get_sf_connection()
 
 def ensure_table():
     """Ensure the FEATURE_STORE table exists in Snowflake."""
