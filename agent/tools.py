@@ -5,10 +5,11 @@ Python tool definitions wrapping non-UI business logic for the Agent to use.
 """
 
 import sys
-import os
+from pathlib import Path
 
-# Append the parent directory to sys.path so we can import from `app/`
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import app.core_services as cs
 from modeling.evaluator import load_metrics_summary, load_metrics_history
@@ -67,3 +68,4 @@ TOOL_MAP = {
     "simulate_whatif": simulate_whatif,
     "get_eval_metrics": get_eval_metrics
 }
+
