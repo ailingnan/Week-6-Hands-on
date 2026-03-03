@@ -145,16 +145,15 @@ def ingest_csv(path: str) -> dict:
         # Standardize column names to uppercase
         df.columns = [c.strip().upper() for c in df.columns]
 
-        if "CHUNK_TEXT" in df.columns:
-            # fillna("") prevents crashing on empty/NaN chunk text
-            df["TEXT_LENGTH"] = df["CHUNK_TEXT"].fillna("").astype(str).str.len()
-        else:
-            raise ValueError("CSV is missing the 'CHUNK_TEXT' column")
+       df = pd.read_csv(path)
 
-        missing = REQUIRED_COLS - set(df.columns)
-        if missing:
-            raise ValueError(f"Missing columns: {missing}")
+# Standardize column names to uppercase
+df.columns = [c.strip().upper() for c in df.columns]
 
+if "CHUNK_TEXT" in df.columns:
+    df["TEXT_LENGTH"] = df["CHUNK_TEXT"].fillna("").str.len()
+else:
+    raise ValueError("CSV is missing the 'CHUNK_TEXT' column")
         # Keep required columns only and clean
         df = df[list(REQUIRED_COLS)].copy()
         df = df.dropna(subset=["CHUNK_TEXT"])
