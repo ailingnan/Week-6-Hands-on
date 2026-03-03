@@ -46,6 +46,16 @@ load_dotenv()
 LOG_PATH    = "pipeline_logs.csv"
 APP_VERSION = st.sidebar.selectbox("Model Version", ["v1", "v2", "v3"], index=0)
 
+@st.cache_resource
+def init_db_tables():
+    try:
+        fs.ensure_table()
+        ev.ensure_table()
+    except Exception as e:
+        print(f"DB initialization warning: {e}")
+
+init_db_tables()
+
 
 
 # ── Logging Utilities ──────────────────────────────────────────
@@ -145,8 +155,8 @@ with tabs[0]:
                         st.json(t)
             if "evidence" in msg and msg["evidence"]:
                 with st.expander("📄 Retrieved Evidence"):
-                    for ev in msg["evidence"]:
-                        st.markdown(f"**{ev['doc']} (Page {ev['page']})** - Score: {ev['score']}\n\n> {ev['text']}")
+                    for evidence_item in msg["evidence"]:
+                        st.markdown(f"**{evidence_item['doc']} (Page {evidence_item['page']})** - Score: {evidence_item['score']}\n\n> {evidence_item['text']}")
 
     # Chat Input
     if prompt := st.chat_input("Ex: 'How much is a student parking permit?' or 'Show me the eval summary'"):
@@ -173,8 +183,8 @@ with tabs[0]:
                         
             if evidence:
                 with st.expander("📄 Retrieved Evidence"):
-                    for ev in evidence:
-                        st.markdown(f"**{ev['doc']} (Page {ev['page']})** - Score: {ev['score']}\n\n> {ev['text']}")
+                    for evidence_item in evidence:
+                        st.markdown(f"**{evidence_item['doc']} (Page {evidence_item['page']})** - Score: {evidence_item['score']}\n\n> {evidence_item['text']}")
 
         # Save assistant message to state
         st.session_state.messages.append({
