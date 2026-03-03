@@ -24,11 +24,9 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
-import snowflake.connector
 from dotenv import load_dotenv
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.backends import default_backend
 from groq import Groq
+from db import get_sf_connection
 
 # Add project root to Python path so imports like `features`, `ingestion`, etc. work
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -90,7 +88,7 @@ def generate_answer(question: str, chunks_df: pd.DataFrame, model: str = "llama-
 
 # ── Snowflake Connection ────────────────────────────────────────
 def sf_connect():
-    return cs.sf_connect()
+    return get_sf_connection()
 
 # ── Core Retrieval (With Caching) ───────────────────────────────
 @st.cache_data(ttl=120, show_spinner=False)
