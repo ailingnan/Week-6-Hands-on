@@ -6,13 +6,16 @@ Handles user input -> Groq LLM routing -> Tool Execution -> Final Response.
 Provides multi-step reasoning traces and robust error handling.
 """
 
-import sys
-import os
+
 import time
 import json
 
-# Add parent dir to path so we can import app and agent modules
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import app.core_services as cs
 from agent.tools import TOOL_MAP
@@ -161,3 +164,4 @@ def run_agent(user_query: str) -> dict:
             "trace": trace,
             "evidence": evidence
         }
+
