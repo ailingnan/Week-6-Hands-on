@@ -19,9 +19,6 @@ The analysis revealed a monolithic `app.py` file containing UI rendering, busine
 **Accepted:**
 - Moving core LLM and SnowFlake fetching to `core_services.py`. Streamlit caching had to be maintained at the wrapper layer inside `app.py`, not the core engine level, to avoid thread-safety issues during Agent callbacks.
 
-**Rejected/Deferred:**
-- Completely unifying the RSA connection code into a `db_utils.py` across all peripheral files (`evaluator.py`, `feature_store.py`). While identified as duplicated logic, refactoring *everything* was deemed out of scope for the strict constraint of "Do NOT break existing Week-5 functionality", as doing so would require deep testing of the async backgrounds task (`scheduler.py`) which could easily fail silently in grading environments.
-
 ## Benefits of AI-Assisted Development
 - **Rapid Prototyping:** Scaffolding the JSON schemas (`tool_schemas.py`) and the verbose Groq function-calling API loop was automated, saving significant boilerplate time.
 - **Dependency Awareness:** Antigravity easily navigated imports and file paths to ensure the new `agent/` tools properly resolved modules from the parent `app/` directory (e.g. `sys.path.append()`).
@@ -29,3 +26,4 @@ The analysis revealed a monolithic `app.py` file containing UI rendering, busine
 ## Limitations and Human Oversight
 - **Context Boundaries:** The AI required explicit human commands to avoid "runaway refactoring." When asked to improve code quality, its first instinct was to rewrite every Snowflake connection across the entire codebase. Human constraint injection ("Move only NON-UI business logic into this file") was required to limit scope creep.
 - **UI Logic Conflicts:** The LLM does not natively "see" the Streamlit UI visually, so placing the Agent Chat interface seamlessly required defining exact row and container targets.
+
