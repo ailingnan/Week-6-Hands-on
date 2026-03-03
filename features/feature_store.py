@@ -33,7 +33,12 @@ CREATE TABLE IF NOT EXISTS FEATURE_STORE (
 
 def sf_connect():
     """Establishes a connection to Snowflake using RSA key authentication."""
-    with open("rsa_key.p8", "rb") as f:
+    key_path = os.getenv("SNOWFLAKE_RSA_KEY_PATH", "rsa_key.p8")
+    if not os.path.exists(key_path):
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        key_path = os.path.join(project_root, "rsa_key.p8")
+        
+    with open(key_path, "rb") as f:
         pk = serialization.load_pem_private_key(f.read(), password=None, backend=default_backend())
     pkb = pk.private_bytes(
         encoding=serialization.Encoding.DER,
